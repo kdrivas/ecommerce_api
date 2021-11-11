@@ -1,11 +1,15 @@
+const fs = require('fs')
+const productPath = './persistance/products.json'
+
 class Products {
-  constructor(initProducts) {
-    this.products = initProducts
+  constructor() {
+    if(!fs.existsSync(productPath))
+      fs.writeFileSync(productPath, JSON.stringify([]))
   }
 
-  getLastId() {
-    if(this.products.length) {
-      return this.products[this.products.length - 1].id + 1
+  getLastId(products) {
+    if(products.length) {
+      return products[products.length - 1].id + 1
     }
     else {
       return 1
@@ -13,10 +17,13 @@ class Products {
   }
 
   async getAll() {
-    return this.products
+    const data = JSON.parse(fs.readFileSync(productPath, 'utf-8'))
+    return data
   }
 
   async addProduct(name, description, sku, photo, price, stock) {
+    const products = await this.getAll()
+    console.log(products)
     const product = { 
       'timestamp': Date.now(), 
       name,         // Nombre
@@ -26,13 +33,15 @@ class Products {
       price, // Precio
       stock
     }
-    product['id'] = this.getLastId()
-    this.products.push(product)
+    product['id'] = this.getLastId(products)
+    products.push(product)
+    fs.writeFileSync(productPath, JSON.stringify(products, null, 2))
     return product
   }
 
   async getProduct(id) {
-    const product = this.products.filter(e => e.id == id)
+    const products = await this.getAll()
+    const product = products.filter(e => e.id == id)
     if (product) {
       return product[0]
     }
@@ -42,10 +51,12 @@ class Products {
   }
 
   async modifyProduct(id, name, description, sku, photo, price, stock) {
-    const index = this.products.findIndex(e => e.id == id)
+    const products = await this.getAll()
+    const index = products.findIndex(e => e.id == id)
     if (index >= 0) {
-      this.products[index] = {...this.products[index], ...{name, description, sku, photo, price, stock}}
-      return product[index]
+      products[index] = {...products[index], ...{name, description, sku, photo, price, stock}}
+      fs.writeFileSync(productPath, JSON.stringify(products, null, 2))
+      return products[index]
     }
     else {
       return null
@@ -53,9 +64,11 @@ class Products {
   }
 
   async removeProduct(id) {
-    const index = this.products.findIndex(e => e.id == id)
+    const products = await this.getAll()
+    const index = products.findIndex(e => e.id == id)
     if (index >= 0) {
-      this.products.split(index, 1)
+      products.splice(index, 1)
+      fs.writeFileSync(productPath, JSON.stringify(products, null, 2))
       return 1
     }
     else {

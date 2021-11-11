@@ -1,0 +1,32 @@
+[
+  {
+    "timestamp": 1636661586573,
+    "name": "nombre bueno",
+    "description": "1",
+    "sku": "1",
+    "photo": "0",
+    "price": "1231",
+    "stock": "123123",
+    "id": 1
+  },
+  {
+    "timestamp": 1636661589894,
+    "name": "0.5",
+    "description": "1",
+    "sku": "1",
+    "photo": "0",
+    "price": "1231",
+    "stock": "123123",
+    "id": 3
+  },
+  {
+    "timestamp": 1636661590644,
+    "name": "0.5",
+    "description": "1",
+    "sku": "1",
+    "photo": "0",
+    "price": "1231",
+    "stock": "123123",
+    "id": 4
+  }
+]
