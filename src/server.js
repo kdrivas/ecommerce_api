@@ -1,4 +1,5 @@
 const express = require('express')
+const exphbs = require('express-handlebars')
 
 const productRouter = require('./routes/product.js')
 const basketRouter = require('./routes/basket.js')
@@ -8,6 +9,8 @@ const { baskets, products } = require('./constants.js')
 const PORT = process.env.PORT || 8080
 const app = express()
 const administrator = true
+
+app.use(express.static('public'))
 
 app.set('isAdmin', administrator)
 app.set('baskets', baskets)
