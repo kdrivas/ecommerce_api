@@ -1,0 +1,6 @@
+class MemoryContainer {
+  constructor() {
+
+  }
+  
+}
