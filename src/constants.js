@@ -1,23 +1,13 @@
-const multer = require('multer')
-const Baskets = require('./containers/baskets.js')
-const Products = require('./containers/products.js')
+import Baskets from './dao/basket/DaoBasketFile.js'
+import Products from './dao/product/DaoProductMemory.js'
 
 const PATH = './../persistance'
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, PATH)
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname)
-  }
-})
+const productPath = './persistance/products.json'
+const basketPath = './persistance/baskets.json'
 
-const db = multer({ storage })
+const baskets = new Baskets(basketPath)
+const products = new Products(productPath)
 
-const baskets = new Baskets()
-const products = new Products()
 
-exports.db = db
-exports.baskets = baskets
-exports.products = products
+export {baskets, products} 

@@ -1,5 +1,3 @@
-import { deepStrictEqual } from 'assert'
-import { createCipheriv } from 'crypto'
 import fs from 'fs'
 
 class FileContainer {
@@ -9,9 +7,16 @@ class FileContainer {
       fs.writeFileSync(init, JSON.stringify([]))
   }
 
+  assignId(data) {
+    if (data.length)
+      return Math.max(...data.map(e => e.id)) + 1
+    else
+      return 1
+  }
+
   async getAll() {
     try {
-      const text = await fs.readFile(this.nameFile, 'utf-8')
+      const text = await fs.promises.readFile(this.nameFile, 'utf8')
       const data = JSON.parse(text)
       return data
     } catch (e) {
@@ -21,7 +26,7 @@ class FileContainer {
 
   async getElement(id) {
     try {
-      const text = await fs.readFile(this.nameFile, 'utf-8')
+      const text = await fs.promises.readFile(this.nameFile, 'utf8')
       const data = JSON.parse(text)
       return data.filter(e => e.id == id)      
     } catch (e) {
@@ -31,11 +36,11 @@ class FileContainer {
 
   async add(element) {
     try {
-      const text = await fs.readFile(this.nameFile, 'utf-8')
+      const text = await fs.promises.readFile(this.nameFile, 'utf8')
       const data = JSON.parse(text)
       element['id'] = this.assignId(data)
       data.push(element)
-      await fs.writeFile(this.nameFile, data, null, 2)
+      await fs.promises.writeFile(this.nameFile, JSON.stringify(data, null, 2))
       return element
     } catch(e) {
       console.log(e)
@@ -44,12 +49,12 @@ class FileContainer {
 
   async remove(id) {
     try {
-      const text = await fs.readFile(this.nameFile, 'utf-8')
+      const text = await fs.promises.readFile(this.nameFile, 'utf8')
       const data = JSON.parse(text)    
-      const index = products.findIndex(e => e.id == id)
+      const index = data.findIndex(e => e.id == id)
       if (index >= 0) {
-        data.splice(index, 0)
-        await fs.writeFile(this.nameFile, data, null, 2)
+        data.splice(index, 1)
+        await fs.promises.writeFile(this.nameFile, JSON.stringify(data, null, 2))
         return 1
       }
       else
@@ -61,14 +66,34 @@ class FileContainer {
 
   async update(id, element) {
     try {
-      const text = await fs.readFile(this.nameFile, 'utf-8')
+      const text = await fs.promises.readFile(this.nameFile, 'utf8')
       const data = JSON.parse(text)    
-
+      const index = data.findIndex(e => e.id == id)
+      if (index >= 0){
+        data[index] = {...data[index], ...element}
+        await fs.promises.writeFile(this.nameFile, JSON.stringify(data, null, 2))
+        return data[index]
+      }
+      else
+        return null
     } catch(e) {
       console.log(e)
     }
-    const data = JSON.parse(fs.readFileSync(this.nameFile, 'utf-8'))
-    const element = data.filter(e => e.id == id)
+  }
+
+  async findById(id){
+    try {
+      const text = await fs.promises.readFile(this.nameFile, 'utf8')
+      const data = JSON.parse(text)    
+      const index = data.findIndex(e => e.id == id)
+      if (index >= 0){
+        return data[index]
+      }
+      else
+        return null
+    } catch(e) {
+      console.log(e)
+    }
   }
 }
 

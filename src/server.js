@@ -1,10 +1,9 @@
-const express = require('express')
-const exphbs = require('express-handlebars')
+import express from 'express'
 
-const productRouter = require('./routes/product.js')
-const basketRouter = require('./routes/basket.js')
+import productRouter from './routes/product.js'
+import basketRouter from './routes/basket.js'
 
-const { baskets, products } = require('./constants.js')
+import { baskets, products } from './constants.js'
 
 const PORT = process.env.PORT || 8080
 const app = express()

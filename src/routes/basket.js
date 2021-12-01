@@ -1,23 +1,31 @@
-const { Router } = require('express')
+import { Router } from 'express'
 
-basketRouter = Router()
+const basketRouter = Router()
 
 basketRouter.get('/', async (req, res, err) => {
-  const baskets = req.app.get('baskets')
-  const allBaskets = await baskets.getAll()
-  res.status(200).json({'baskets': allBaskets})
+  try {
+    const baskets = req.app.get('baskets')
+    const allBaskets = await baskets.getAll()
+    res.status(200).json({'baskets': allBaskets})
+  } catch(e) {
+    console.log(e)
+  }
 })
 
 basketRouter.post('/', async (req, res, err) => {
-  const baskets = req.app.get('baskets')
-  const basket = await baskets.createBasket()
-  res.status(200).json({ basket })
+  try {
+    const baskets = req.app.get('baskets')
+    const basket = await baskets.createBasket()
+    res.status(200).json({ basket })
+  } catch(e) {
+    console.log(e)
+  }
 })
 
 basketRouter.delete('/:id', async (req, res, err) => {
   const baskets = req.app.get('baskets')
   const id = parseInt(req.params.id)
-  const flgDelete = await baskets.deleteBasket(id)
+  const flgDelete = await baskets.remove(id)
   if (flgDelete) 
     res.status(200).json({'message': `Basket removed with id ${id}`})
   else
@@ -27,7 +35,7 @@ basketRouter.delete('/:id', async (req, res, err) => {
 basketRouter.get('/:id/productos', async (req, res, err) => {
   const baskets = req.app.get('baskets')
   const id = parseInt(req.params.id)
-  const products = baskets.getProducts(id)
+  const products = baskets.findById(id)
   if (products)
     res.status(200).send({ products })
   else
@@ -63,4 +71,4 @@ basketRouter.delete('/:id/productos/:idProd', async (req, res, err) => {
     err({'error': 'Basket or product not found'})
 })
 
-module.exports = basketRouter
+export default basketRouter

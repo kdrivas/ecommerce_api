@@ -1,6 +1,6 @@
-const { Router } = require('express')
+import { Router } from 'express'
 
-productRouter = Router()
+const productRouter = Router()
 
 productRouter.get('/', async (req, res) => {
   try {
@@ -40,7 +40,7 @@ productRouter.post('/', async (req, res, err) => {
         err({'error': 'Insufficient data'})
       }
       else {
-        const product = await products.addProduct(name, description, sku, photo, price, stock )
+        const product = await products.add({ name, description, sku, photo, price, stock })
         res.status(200).json({ product })
       }
     }
@@ -58,7 +58,7 @@ productRouter.put('/:id', async (req, res, err) => {
       const products = req.app.get('products')
       const id = parseInt(req.params.id)
       const { name, description, sku, photo, price, stock } = req.body
-      const product = await products.modifyProduct(id, name, description, sku, photo, price, stock)
+      const product = await products.update(id, {name, description, sku, photo, price, stock})
       if (product){
         res.status(200).json({ product })
       }
@@ -80,7 +80,7 @@ productRouter.delete('/:id', async (req, res, err) => {
     if (isAdmin) {
       const products = req.app.get('products')
       const id = parseInt(req.params.id)
-      const flgRemove = products.removeProduct(id)
+      const flgRemove = await products.remove(id)
       if (flgRemove) {
         res.status(200).json({ 'message': 'Product removed' })
       }
@@ -96,4 +96,4 @@ productRouter.delete('/:id', async (req, res, err) => {
   }
 })
 
-module.exports = productRouter
+export default productRouter
