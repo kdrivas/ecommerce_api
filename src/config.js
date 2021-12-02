@@ -1,6 +1,6 @@
 const bdType = 'MEM'
 const configBD = {
-  'MEM': './persistance/',
+  'FILE': './persistance/',
 }
 
-export { bdType, configBD}
+export { bdType, configBD }

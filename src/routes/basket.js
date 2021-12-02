@@ -1,11 +1,12 @@
 import { Router } from 'express'
+import DaoBasket from '../dao/basket/index.js'
+import DaoProduct from '../dao/product/index.js'
 
 const basketRouter = Router()
 
 basketRouter.get('/', async (req, res, err) => {
   try {
-    const baskets = req.app.get('baskets')
-    const allBaskets = await baskets.getAll()
+    const allBaskets = await DaoBasket.getAll()
     res.status(200).json({'baskets': allBaskets})
   } catch(e) {
     console.log(e)
@@ -14,8 +15,7 @@ basketRouter.get('/', async (req, res, err) => {
 
 basketRouter.post('/', async (req, res, err) => {
   try {
-    const baskets = req.app.get('baskets')
-    const basket = await baskets.createBasket()
+    const basket = await DaoBasket.createBasket()
     res.status(200).json({ basket })
   } catch(e) {
     console.log(e)
@@ -23,9 +23,8 @@ basketRouter.post('/', async (req, res, err) => {
 })
 
 basketRouter.delete('/:id', async (req, res, err) => {
-  const baskets = req.app.get('baskets')
   const id = parseInt(req.params.id)
-  const flgDelete = await baskets.remove(id)
+  const flgDelete = await DaoBasket.remove(id)
   if (flgDelete) 
     res.status(200).json({'message': `Basket removed with id ${id}`})
   else
@@ -33,9 +32,8 @@ basketRouter.delete('/:id', async (req, res, err) => {
 })
 
 basketRouter.get('/:id/productos', async (req, res, err) => {
-  const baskets = req.app.get('baskets')
   const id = parseInt(req.params.id)
-  const products = baskets.findById(id)
+  const products = DaoBasket.findById(id)
   if (products)
     res.status(200).send({ products })
   else
@@ -44,11 +42,10 @@ basketRouter.get('/:id/productos', async (req, res, err) => {
 
 basketRouter.post('/:id/productos', async (req, res, err) => {
   try {
-    const baskets = req.app.get('baskets')
-    const products = await req.app.get('products').getAll()
+    const products = await DaoProduct.getAll()
     const id = parseInt(req.params.id)
     const idProd = parseInt(req.body.id_prod)
-    const flgAdded = await baskets.addProductToBasket(id, idProd, products)
+    const flgAdded = await DaoBasket.addProductToBasket(id, idProd, products)
     if (flgAdded)
       res.status(200).json({'message': 'Product added to basket'})
     else
@@ -60,10 +57,9 @@ basketRouter.post('/:id/productos', async (req, res, err) => {
 })
 
 basketRouter.delete('/:id/productos/:idProd', async (req, res, err) => {
-  const baskets = req.app.get('baskets')
   const basketId = parseInt(req.params.id)
   const productId = parseInt(req.params.idProd)
-  const flgDelete = await baskets.deleteProduct(basketId, productId)
+  const flgDelete = await DaoBasket.deleteProduct(basketId, productId)
 
   if (flgDelete)
     res.status(200).json({'message': 'Product deleted from basket'})

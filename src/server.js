@@ -3,8 +3,6 @@ import express from 'express'
 import productRouter from './routes/product.js'
 import basketRouter from './routes/basket.js'
 
-import { baskets, products } from './constants.js'
-
 const PORT = process.env.PORT || 8080
 const app = express()
 const administrator = true
@@ -12,8 +10,6 @@ const administrator = true
 app.use(express.static('public'))
 
 app.set('isAdmin', administrator)
-app.set('baskets', baskets)
-app.set('products', products)
 
 app.use(express.urlencoded({ extended: true}))
 app.use(express.json())
