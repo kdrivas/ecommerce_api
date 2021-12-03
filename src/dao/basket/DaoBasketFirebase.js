@@ -1,8 +1,9 @@
-import FileContainer from './../../containers/FileContainer.js';
+import FirebaseContainer from "../../containers/FirebaseContainer.js";
+import admin from 'firebase-admin'
 
-class DaoBasketFile extends FileContainer{
-  constructor(init) {
-    super(init)
+class DaoBasketFirebase extends FirebaseContainer{
+  constructor(init, model) {
+    super(init, model)
   }
 
   async findProducts(id, DaoProduct) {
@@ -51,4 +52,4 @@ class DaoBasketFile extends FileContainer{
   }
 }
 
-export default DaoBasketFile
+export default DaoBasketFirebase

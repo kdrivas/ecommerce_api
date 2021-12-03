@@ -72,6 +72,7 @@ basketRouter.post('/:id/productos', async (req, res, err) => {
 
 basketRouter.delete('/:id/productos/:id_prod', async (req, res, err) => {
   const { id, id_prod } = req.params
+  console.log(id, id_prod)
   const flgDelete = await DaoBasket.deleteProduct(id, id_prod)
 
   if (flgDelete)

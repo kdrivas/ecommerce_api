@@ -56,6 +56,24 @@ class MongoContainer {
       console.log(e)
     }
   }
+
+  async addSubObject(id, product) {
+    try {
+      const result = await this.model.updateOne({ _id: id }, { $push: {products: product} })
+      return result['matchedCount']
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
+  async removeSubObject(id, product) {
+    try {
+      const result = await this.model.updateOne({ _id: id }, { $pull: {products: product} })
+      return result['modifiedCount']
+    } catch(e) {
+      console.log(e)
+    }
+  }
 }
 
 export default MongoContainer

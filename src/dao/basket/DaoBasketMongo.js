@@ -30,20 +30,20 @@ class DaoBasketMongo extends MongoContainer{
       console.log(e)
     }
   }
-
+  
   async addProductToBasket(id, product) {
     try {
-      const result = await this.model.updateOne({ _id: id }, { $push: {products: product} })
-      return result['matchedCount']
+      const result = await this.addSubObject(id, product)
+      return result
     } catch(e) {
       console.log(e)
     }
   }
 
-  async deleteProduct(id, product) {
+  async deleteProduct(id, idProd) {
     try {
-      const result = await this.model.updateOne({ _id: id }, { $pull: {products: product} })
-      return result['modifiedCount']
+      const result = await this.removeSubObject(id, idProd)
+      return result
     } catch(e) {
       console.log(e)
     }

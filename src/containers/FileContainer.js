@@ -85,6 +85,42 @@ class FileContainer {
       console.log(e)
     }
   }
+
+  async addSubObject(id, product) {
+    try {
+      const basket = await this.findById(id)
+      console.log(basket)
+      if (basket) {
+        basket.products.push(product.id)
+        await this.update(id, basket)
+        return 1
+      }
+      else
+        return 0
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
+  async removeSubObject(id, idProd) {
+    try {
+      const basket = await this.findById(id)
+      if (basket) {
+        const indexProduct = basket.products.findIndex(e => e == idProd)
+        if (indexProduct >= 0) {
+          basket.products.splice(indexProduct, 1)
+          await this.update(id, basket)
+          return 1
+        }
+        else
+          return 0
+      }
+      else 
+        return 0
+    } catch(e) {
+      console.log(e)
+    }
+  }
 }
 
 export default FileContainer

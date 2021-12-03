@@ -33,31 +33,21 @@ class DaoBasketMemory extends FileContainer{
   }
 
   async addProductToBasket(id, product) {
-    const basket = await this.findById(id)
-    console.log(basket)
-    if (basket) {
-      basket.products.push(product.id)
-      await this.update(id, basket)
-      return 1
+    try {
+      const result = await this.addSubObject(id, product)
+      return result
+    } catch(e) {
+      console.log(e)
     }
-    else
-      return 0
   }
 
   async deleteProduct(id, idProd) {
-    const basket = await this.findById(id)
-    if (basket) {
-      const indexProduct = basket.products.findIndex(e => e == idProd)
-      if (indexProduct >= 0) {
-        basket.products.splice(indexProduct, 1)
-        await this.update(id, basket)
-        return 1
-      }
-      else
-        return 0
+    try {
+      const result = await this.removeSubObject(id, idProd)
+      return result
+    } catch(e) {
+      console.log(e)
     }
-    else 
-      return 0
   }
 }
 
