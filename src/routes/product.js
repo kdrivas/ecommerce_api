@@ -15,8 +15,8 @@ productRouter.get('/', async (req, res) => {
 
 productRouter.get('/:id', async (req, res, err) => {
   try {
-    const id = parseInt(req.params.id)
-    const product = await DaoProduct.getProduct(id)
+    const { id } = req.params
+    const product = await DaoProduct.findById(id)
     if (product) {
       res.status(200).json({ product })
     }
@@ -52,11 +52,11 @@ productRouter.put('/:id', async (req, res, err) => {
   try {
     const isAdmin = req.app.get('isAdmin')
     if (isAdmin) {
-      const id = parseInt(req.params.id)
+      const { id } = req.params
       const { name, description, sku, photo, price, stock } = req.body
       const product = await DaoProduct.update(id, { name, description, sku, photo, price, stock })
       if (product)
-        res.status(200).json({ product })
+        res.status(200).json({ 'message':  `Product successfully updated`})
       else 
         err({'error': `Product not found with id ${id}`})
     }
@@ -72,10 +72,10 @@ productRouter.delete('/:id', async (req, res, err) => {
   try {
     const isAdmin = req.app.get('isAdmin')
     if (isAdmin) {
-      const id = parseInt(req.params.id)
+      const { id } = req.params
       const flgRemove = await DaoProduct.remove(id)
       if (flgRemove) 
-        res.status(200).json({ 'message': 'Product removed' })
+        res.status(200).json({ 'message': 'Product successfully removed' })
       else 
         err({'error': `Product not found with id ${id}`})
     }

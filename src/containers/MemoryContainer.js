@@ -18,14 +18,6 @@ class MemoryContainer {
     }
   }
 
-  async getElement(id) {
-    try {
-      return this.data.filter(e => e.id == id)      
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
   async add(element) {
     try {
       element['id'] = this.assignId()
@@ -45,7 +37,7 @@ class MemoryContainer {
         return 1
       }
       else
-        return null
+        return 0
     } catch(e) {
       console.log(e)
     }
@@ -56,10 +48,10 @@ class MemoryContainer {
       const index = this.data.findIndex(e => e.id == id)
       if (index >= 0){
         this.data[index] = {...this.data[index], ...element}
-        return this.data[index]
+        return 1
       }
       else
-        return null
+        return 0
     } catch(e) {
       console.log(e)
     }

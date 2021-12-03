@@ -5,6 +5,20 @@ class DaoBasketMemory extends FileContainer{
     super(init)
   }
 
+  async findProducts(id, DaoProduct) {
+    try {
+      const basket = await this.findById(id)
+      if (basket) {
+        const products = await Promise.all(basket.products.map(e => DaoProduct.findById(e)))
+        return products
+      }
+      else
+        return null
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
   async createBasket() {
     try {
       const basket = {
@@ -18,17 +32,13 @@ class DaoBasketMemory extends FileContainer{
     }
   }
 
-  async addProductToBasket(id, idProd, products) {
+  async addProductToBasket(id, product) {
     const basket = await this.findById(id)
+    console.log(basket)
     if (basket) {
-      const indexProduct = products.findIndex(e => e.id == idProd)
-      if (indexProduct >= 0){
-        basket.products.push(products[indexProduct])
-        await this.update(id, basket)
-        return 1
-      }
-      else
-        return 0
+      basket.products.push(product.id)
+      await this.update(id, basket)
+      return 1
     }
     else
       return 0
@@ -37,7 +47,7 @@ class DaoBasketMemory extends FileContainer{
   async deleteProduct(id, idProd) {
     const basket = await this.findById(id)
     if (basket) {
-      const indexProduct = basket.products.findIndex(e => e.id == idProd)
+      const indexProduct = basket.products.findIndex(e => e == idProd)
       if (indexProduct >= 0) {
         basket.products.splice(indexProduct, 1)
         await this.update(id, basket)

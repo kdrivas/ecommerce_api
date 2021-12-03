@@ -24,16 +24,6 @@ class FileContainer {
     }
   }
 
-  async getElement(id) {
-    try {
-      const text = await fs.promises.readFile(this.nameFile, 'utf8')
-      const data = JSON.parse(text)
-      return data.filter(e => e.id == id)      
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
   async add(element) {
     try {
       const text = await fs.promises.readFile(this.nameFile, 'utf8')
@@ -58,7 +48,7 @@ class FileContainer {
         return 1
       }
       else
-        return null
+        return 0
     } catch(e) {
       console.log(e)
     }
@@ -72,10 +62,10 @@ class FileContainer {
       if (index >= 0){
         data[index] = {...data[index], ...element}
         await fs.promises.writeFile(this.nameFile, JSON.stringify(data, null, 2))
-        return data[index]
+        return 1
       }
       else
-        return null
+        return 0
     } catch(e) {
       console.log(e)
     }

@@ -23,29 +23,43 @@ basketRouter.post('/', async (req, res, err) => {
 })
 
 basketRouter.delete('/:id', async (req, res, err) => {
-  const id = parseInt(req.params.id)
-  const flgDelete = await DaoBasket.remove(id)
-  if (flgDelete) 
-    res.status(200).json({'message': `Basket removed with id ${id}`})
-  else
-    err({'error': 'Basket not found'})
+  try {
+    const { id } = req.params
+    const flgDelete = await DaoBasket.remove(id)
+    if (flgDelete) 
+      res.status(200).json({'message': `Basket successfully removed`})
+    else
+      err({'error': 'Basket not found'})
+  } catch(e) {
+    console.log(e)
+  }
 })
 
 basketRouter.get('/:id/productos', async (req, res, err) => {
-  const id = parseInt(req.params.id)
-  const products = DaoBasket.findById(id)
-  if (products)
-    res.status(200).send({ products })
-  else
-    err({'error': 'Basket not found'})
+  try {
+    const { id } = req.params
+    console.log('GET')
+    const products = await DaoBasket.findProducts(id, DaoProduct)
+    if (products)
+      res.status(200).send({ products })
+    else
+      err({'error': 'Basket not found'})
+  } catch(e) {
+    console.log(e)
+  }
 })
 
 basketRouter.post('/:id/productos', async (req, res, err) => {
   try {
-    const products = await DaoProduct.getAll()
-    const id = parseInt(req.params.id)
-    const idProd = parseInt(req.body.id_prod)
-    const flgAdded = await DaoBasket.addProductToBasket(id, idProd, products)
+    const { id } = req.params
+    const { id_prod } = req.body
+
+    const product = await DaoProduct.findById(id_prod)
+    console.log('POST', product)
+    let flgAdded
+    if (product) {
+      flgAdded = await DaoBasket.addProductToBasket(id, product)
+    }
     if (flgAdded)
       res.status(200).json({'message': 'Product added to basket'})
     else
@@ -56,10 +70,9 @@ basketRouter.post('/:id/productos', async (req, res, err) => {
   }
 })
 
-basketRouter.delete('/:id/productos/:idProd', async (req, res, err) => {
-  const basketId = parseInt(req.params.id)
-  const productId = parseInt(req.params.idProd)
-  const flgDelete = await DaoBasket.deleteProduct(basketId, productId)
+basketRouter.delete('/:id/productos/:id_prod', async (req, res, err) => {
+  const { id, id_prod } = req.params
+  const flgDelete = await DaoBasket.deleteProduct(id, id_prod)
 
   if (flgDelete)
     res.status(200).json({'message': 'Product deleted from basket'})
